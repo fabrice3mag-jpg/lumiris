@@ -1,1 +1,45 @@
+<script>
+  // Vérifie la compatibilité navigateur
+  const synth = window.speechSynthesis;
+  const recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (recognition && synth) {
+    const reco = new recognition();
+    reco.lang = 'fr-FR';
+    reco.continuous = false;
+    reco.interimResults = false;
+
+    // Phrase à dire en réponse
+    const reply = new SpeechSynthesisUtterance("Bonjour Fabricia, je suis là. Lumiris t’écoute.");
+    reply.lang = 'fr-FR';
+    reply.pitch = 1;
+    reply.rate = 1;
+    reply.volume = 1;
+
+    // Détection du mot déclencheur
+    reco.onresult = function(event) {
+      const transcript = event.results[0][0].transcript.toLowerCase();
+      console.log("Tu as dit :", transcript);
+      if (transcript.includes("lumiris") || transcript.includes("bonjour")) {
+        synth.speak(reply);
+      }
+    };
+
+    reco.onerror = function(event) {
+      console.error("Erreur de reconnaissance vocale :", event.error);
+    };
+
+    // Lance automatiquement l’écoute
+    function lancerEcoute() {
+      reco.start();
+    }
+
+    // Lance l’écoute au chargement de la page
+    window.onload = function() {
+      lancerEcoute();
+    };
+  } else {
+    alert("Reconnaissance vocale non prise en charge par ce navigateur.");
+  }
+</script>
 
